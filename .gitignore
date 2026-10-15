@@ -1,1 +1,6 @@
 .DS_Store
+
+# clasp：含 scriptId 與登入憑證，不進 repo
+.clasp.json
+.clasprc.json
+node_modules/
