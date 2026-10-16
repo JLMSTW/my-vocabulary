@@ -30,6 +30,8 @@ function handleRequest_(body) {
         return { ok: true, data: getData_() };
       case 'addWord':
         return { ok: true, data: addWord_(payload) };
+      case 'saveRound':
+        return { ok: true, data: saveRound_(payload) };
       default:
         return { ok: false, error: 'unknown_action' };
     }

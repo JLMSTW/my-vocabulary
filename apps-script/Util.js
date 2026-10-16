@@ -73,6 +73,26 @@ function appendRows(def, records) {
   range.setValues(values);
 }
 
+/** 以 records 覆寫整張工作表的資料區（不含標題列），用於整批更新。 */
+function writeAllRows(def, records) {
+  const sheet = getSheet(def);
+  const oldCount = Math.max(sheet.getLastRow() - 1, 0);
+  if (records.length + 1 > sheet.getMaxRows()) {
+    sheet.insertRowsAfter(sheet.getMaxRows(), records.length + 1 - sheet.getMaxRows());
+  }
+  if (records.length) {
+    const values = records.map((r) =>
+      def.headers.map((h) => (r[h] === undefined || r[h] === null ? '' : String(r[h])))
+    );
+    const range = sheet.getRange(2, 1, records.length, def.headers.length);
+    range.setNumberFormat('@');
+    range.setValues(values);
+  }
+  if (oldCount > records.length) {
+    sheet.getRange(records.length + 2, 1, oldCount - records.length, def.headers.length).clearContent();
+  }
+}
+
 /** 寫入用的鎖，避免同時寫入造成資料錯亂。 */
 function withLock(fn) {
   const lock = LockService.getScriptLock();

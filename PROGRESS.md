@@ -15,21 +15,18 @@
 - [x] `addWord`（新增單字、重複判定、NFC 正規化）
 - [x] 程式碼已推送到 Google
 
+## 2026-10-16（上午）
+
+- [x] 編輯器測試全部通過：`testAuth`、`testAddWord`（新增成功、第二次擋下 duplicate）、`testGetData`
+- [x] `saveRound`：寫入 PracticeHistory、ReviewProgress、Rounds；錯題優先規則與 `round_id` 防重複皆測試通過（`testSaveRound`），測試資料已用 `testCleanup` 清除
+- [x] `onEdit`：Sheet 直接輸入時自動補 `word_id`、`date_added`，更新 `updated_at`，去空白，重複時跳提示，皆測試通過
+- Vocabulary 目前有 `la boulangerie`、`il pane`
+
 ### 下一步
 
-1. **在 Apps Script 編輯器執行測試**（還沒做）
-   - 先按 `⌘ + R` 重新整理編輯器，點左側 `Tests.gs`
-   - 依序執行：`testAuth` → `testAddWord` → `testAddWord`（第二次）→ `testGetData`
-   - 預期結果：
-     - `testAuth`：前兩行 `unauthorized`，第三行 `unknown_action`
-     - `testAddWord` 第一次：`ok: true`，Vocabulary 多一列 `la boulangerie`
-     - `testAddWord` 第二次：`error: duplicate`
-     - `testGetData`：`單字 1、複習進度 0、練習紀錄 0`
-   - 到 Sheet 確認：外文前後空白已去除、語言為 `FR`、標籤為 `地點,商店`
-2. 寫回合結果寫入：PracticeHistory、Rounds、ReviewProgress，`round_id` 重複不寫入
-3. 寫 onEdit：在 Sheet 直接輸入 `word` 時自動補 `word_id` 與 `date_added`
-4. 部署 Web App
-5. 正式使用前執行 `resetToken` 換一組新 token（目前的 token 曾出現在截圖中）
+1. 部署 Web App（第 1 步最後一項）
+2. 開始第 2 步：前端原型（先用假資料）
+3. 正式使用前執行 `resetToken` 換一組新 token（目前的 token 曾出現在截圖中）
 
 ### 常用指令
 
