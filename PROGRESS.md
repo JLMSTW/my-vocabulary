@@ -21,13 +21,23 @@
 - [x] `saveRound`：寫入 PracticeHistory、ReviewProgress、Rounds；錯題優先規則與 `round_id` 防重複皆測試通過（`testSaveRound`），測試資料已用 `testCleanup` 清除
 - [x] `onEdit`：Sheet 直接輸入時自動補 `word_id`、`date_added`，更新 `updated_at`，去空白，重複時跳提示，皆測試通過
 - [x] `onEdit`：複製整列貼上時，`word_id` 與其他列重複會自動換新 ID（測試通過）
+- [x] Web App 已部署（v1，執行身分：我，存取：所有人），健康檢查 `doGet` 正常
 - Vocabulary 目前有 `la boulangerie`、`il pane`
+
+**第 1 步完成。**
+
+Web App 網址與 token 只存在自己的密碼管理工具，不放進 repo。
 
 ### 下一步
 
-1. 部署 Web App（第 1 步最後一項）
-2. 開始第 2 步：前端原型（先用假資料）
-3. 正式使用前執行 `resetToken` 換一組新 token（目前的 token 曾出現在截圖中）
+1. 開始第 2 步：前端原型（先用假資料）：學習紀錄、生字卡、拼字、選擇題、篩選、新增
+
+### 後端改版時
+
+改了 `apps-script/` 之後：
+
+1. `npx @google/clasp push --force`
+2. Apps Script 編輯器 →「部署」→「管理部署作業」→ 鉛筆圖示 → 版本選「新版本」→「部署」（網址不變）
 
 ### 常用指令
 
