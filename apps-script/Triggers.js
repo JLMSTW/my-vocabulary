@@ -1,6 +1,7 @@
 /**
  * 直接在 Sheet 編輯 Vocabulary 時：
  * - 填入 word 後自動補 word_id、date_added
+ * - word_id 與其他列重複（複製整列貼上）時換新 ID，date_added 改為現在
  * - 更新 updated_at
  * - 文字做 NFC 正規化並去空白，語言轉大寫，標籤整理成半形逗號
  * - 與既有單字重複時跳出提示（不擋下，請自行刪除）
@@ -33,9 +34,25 @@ function onEdit(e) {
   const now = nowIso();
   const edited = [];
 
+  // 其他列已使用的 word_id。複製整列貼上時 ID 會重複，貼上的那列要換新 ID
+  const usedIds = new Set(
+    readRows(def)
+      .filter((r, i) => i + 2 < firstRow || i + 2 > lastRow)
+      .map((r) => normText(r.word_id))
+      .filter(Boolean)
+  );
+
   const values = range.getValues().map((row) => {
     const r = Object.fromEntries(def.headers.map((h, i) => [h, row[i]]));
     if (!normText(r.word)) return row;
+
+    let wordId = normText(r.word_id);
+    let dateAdded = normText(r.date_added);
+    if (!wordId || usedIds.has(wordId)) {
+      if (wordId) dateAdded = '';
+      wordId = newId();
+    }
+    usedIds.add(wordId);
 
     const next = {
       ...r,
@@ -46,8 +63,8 @@ function onEdit(e) {
       example: normText(r.example),
       topic: normText(r.topic),
       tags: normTags(r.tags),
-      word_id: normText(r.word_id) || newId(),
-      date_added: normText(r.date_added) || now,
+      word_id: wordId,
+      date_added: dateAdded || now,
       updated_at: now,
     };
     edited.push(next);

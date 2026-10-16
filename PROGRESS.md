@@ -20,6 +20,7 @@
 - [x] 編輯器測試全部通過：`testAuth`、`testAddWord`（新增成功、第二次擋下 duplicate）、`testGetData`
 - [x] `saveRound`：寫入 PracticeHistory、ReviewProgress、Rounds；錯題優先規則與 `round_id` 防重複皆測試通過（`testSaveRound`），測試資料已用 `testCleanup` 清除
 - [x] `onEdit`：Sheet 直接輸入時自動補 `word_id`、`date_added`，更新 `updated_at`，去空白，重複時跳提示，皆測試通過
+- [x] `onEdit`：複製整列貼上時，`word_id` 與其他列重複會自動換新 ID（測試通過）
 - Vocabulary 目前有 `la boulangerie`、`il pane`
 
 ### 下一步
