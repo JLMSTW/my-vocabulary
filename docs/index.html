@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="My Vocab">
+  <meta name="theme-color" content="#F2F3F6">
+  <title>My Vocabulary</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <div class="app">
+    <span id="data-badge" class="badge mock-badge" hidden>假資料</span>
+
+    <main id="view" class="view" tabindex="-1"></main>
+
+    <nav class="tabbar" aria-label="主要分頁">
+      <a href="#/record" data-route="record">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+        <span>紀錄</span>
+      </a>
+      <a href="#/flashcard" data-route="flashcard">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/></svg>
+        <span>生字卡</span>
+      </a>
+      <a href="#/spelling" data-route="spelling">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>
+        <span>拼字</span>
+      </a>
+      <a href="#/choice" data-route="choice">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="7" r="2"/><circle cx="6" cy="17" r="2"/><path d="M11 7h9M11 17h9"/></svg>
+        <span>選擇題</span>
+      </a>
+      <a href="#/add" data-route="add">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        <span>新增</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "My Vocabulary",
+  "short_name": "My Vocab",
+  "lang": "zh-Hant",
+  "start_url": "./#/record",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F2F3F6",
+  "theme_color": "#F2F3F6"
+}

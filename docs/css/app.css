@@ -1,0 +1,420 @@
+/* ---------- 配色與尺寸（見 CLAUDE.md「配色」） ---------- */
+:root {
+  --ink: #15172A;          /* 主色：文字、主要按鈕 */
+  --bg: #F2F3F6;           /* 背景 */
+  --surface: #FFFFFF;      /* 卡片 */
+  --muted: #5B5F73;        /* 次要文字 */
+  --line: #DCDEE6;         /* 分隔線、邊框 */
+  --correct: #2B45C9;      /* 答對 */
+  --correct-bg: #E6EAFB;
+  --wrong: #B4461B;        /* 答錯、待複習 */
+  --wrong-bg: #FBEBE3;
+  --fr: #6495ED;           /* 法文：只用在學習紀錄頁 */
+  --it: #DAA520;           /* 義大利文：只用在學習紀錄頁 */
+
+  --radius: 14px;
+  --tap: 48px;             /* 觸控目標至少 44px */
+  --tabbar-h: 60px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC",
+    "Helvetica Neue", Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+[hidden] { display: none !important; }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+/* ---------- 版面 ---------- */
+.app {
+  max-width: 560px;        /* 桌面瀏覽器也置中顯示，不另做桌面版 */
+  margin: 0 auto;
+  min-height: 100dvh;
+}
+
+.view {
+  padding: calc(var(--safe-top) + 20px) 20px calc(var(--tabbar-h) + var(--safe-bottom) + 24px);
+  outline: none;
+}
+
+.view > * + * { margin-top: 14px; }
+
+/* 每頁的標題列 */
+.page-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0 6px;
+}
+
+.page-head h1 {
+  margin: 0;
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.page-head-meta {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* 假資料模式提示，固定在畫面上方中間 */
+.mock-badge {
+  position: fixed;
+  top: calc(var(--safe-top) + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  font-size: 0.65rem;
+  opacity: 0.85;
+}
+
+/* 輸入時隱藏底部分頁，避免被鍵盤頂起來擋住輸入框 */
+body.keyboard-open .tabbar { display: none; }
+body.keyboard-open .view { padding-bottom: 24px; }
+
+/* ---------- 底部分頁 ---------- */
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  max-width: 560px;
+  margin: 0 auto;
+  padding-bottom: var(--safe-bottom);
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.tabbar a {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--tabbar-h);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.72rem;
+}
+
+.tabbar svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tabbar a[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.tabbar a[aria-current="page"] svg { stroke-width: 2.4; }
+
+/* ---------- 共用元件 ---------- */
+.badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--line);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.stack > * + * { margin-top: 12px; }
+
+.muted { color: var(--muted); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--tap);
+  padding: 0 20px;
+  border: 1px solid var(--ink);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: #fff;
+}
+
+.btn-block { width: 100%; }
+
+.btn:disabled { opacity: 0.4; cursor: default; }
+
+.btn-light {
+  background: #fff;
+  border-color: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 999px;
+}
+
+.icon {
+  display: inline-flex;
+  width: 1.25em;
+  height: 1.25em;
+  flex: none;
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap);
+  height: var(--tap);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 1.2rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.icon-btn:disabled { opacity: 0.25; cursor: default; }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ---------- 學習紀錄 ---------- */
+.goal-card {
+  padding: 20px 22px;
+  border-radius: 22px;
+  background: var(--ink);
+  color: #fff;
+}
+
+.goal-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.goal-rule { opacity: 0.8; font-size: 0.8rem; }
+
+.goal-count {
+  margin: 6px 0 12px;
+  line-height: 1;
+}
+
+.goal-count strong {
+  font-size: 3.2rem;
+  font-weight: 800;
+}
+
+.goal-count span {
+  font-size: 1.3rem;
+  font-weight: 700;
+  opacity: 0.6;
+}
+
+.goal-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.seg-fr { background: var(--fr); }
+.seg-it { background: var(--it); }
+
+.goal-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+
+.goal-legend span,
+.cal-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.dot-fr { background: var(--fr); }
+.dot-it { background: var(--it); }
+
+.goal-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: 0.95rem;
+}
+
+.goal-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.stat-card {
+  display: block;
+  width: 100%;
+  padding: 16px 18px;
+  border: 0;
+  border-radius: 20px;
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
+}
+
+.stat-label { font-size: 0.85rem; color: var(--muted); }
+
+.stat-value {
+  margin-top: 4px;
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.stat-value small {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.stat-sub { margin-top: 4px; font-size: 0.82rem; color: var(--muted); }
+
+.stat-card-review {
+  background: var(--wrong-bg);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.stat-card-review .stat-label,
+.stat-card-review .stat-sub { color: var(--wrong); }
+
+/* 月曆 */
+.calendar-card {
+  padding: 14px 14px 16px;
+  border-radius: 22px;
+  background: var(--surface);
+}
+
+.cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cal-head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.cal-weekdays {
+  margin: 6px 0 8px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.cal-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  color: #15172A;            /* 日期數字一律深色 */
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.cal-day.is-fr { background: var(--fr); }
+.cal-day.is-it { background: var(--it); }
+.cal-day.is-both { background: linear-gradient(135deg, var(--fr) 50%, var(--it) 50%); }
+.cal-day.is-none { border: 1.5px dashed #B9BCC8; font-weight: 500; }
+.cal-day.is-future { color: rgba(21, 23, 42, 0.3); font-weight: 500; }
+.cal-day.is-today { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ink); }
+
+.cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 14px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.swatch.is-fr { background: var(--fr); }
+.swatch.is-it { background: var(--it); }
+.swatch.is-both { background: linear-gradient(135deg, var(--fr) 50%, var(--it) 50%); }
+.swatch.is-none { border: 1.5px dashed #B9BCC8; }
