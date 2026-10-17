@@ -68,6 +68,8 @@ export function createMockData() {
   const rand = seeded(20261016);
   const pick = (arr) => arr[Math.floor(rand() * arr.length)];
 
+  // 加入日期：每種語言最新的字在 1 天前，之後每 3 天一個，方便測試「本週」「本月」篩選
+  const perLanguage = { FR: 0, IT: 0 };
   const vocabulary = WORDS.map(([language, word, meaning_zh, part_of_speech, topic, tags], i) => ({
     word_id: `mock-${String(i + 1).padStart(3, '0')}`,
     language,
@@ -76,7 +78,7 @@ export function createMockData() {
     part_of_speech,
     topic,
     tags: tags ? tags.split(',') : [],
-    date_added: isoAt(60 - i, 20, 0),
+    date_added: isoAt(1 + 3 * perLanguage[language]++, 20, 0),
   }));
 
   const fr = vocabulary.filter((w) => w.language === 'FR');

@@ -34,7 +34,7 @@ export async function renderRecord(container) {
         class: 'stat-card stat-card-review',
         type: 'button',
         'aria-label': `待複習 ${stats.review.total} 個字，點一下開始練習待複習的字`,
-        onclick: () => { location.hash = '#/filter?review=1'; },
+        onclick: () => { location.hash = '#/filter?review=1&from=flashcard&back=record'; },
       },
         h('div', { class: 'stat-label' }, '待複習'),
         h('div', { class: 'stat-value' }, stats.review.total),

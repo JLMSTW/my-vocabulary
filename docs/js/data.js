@@ -24,9 +24,59 @@ export async function addWord(input) {
   return word;
 }
 
-/** 寫入一回合結果。 */
+/**
+ * 寫入一回合結果。
+ * round：{ round_id, practice_mode, language, filters, started_at, finished_at }
+ * attempts：[{ word_id, user_answer, correct_answer, is_correct, practiced_at }]
+ */
 export async function saveRound(round, attempts) {
   const data = await loadData();
-  attempts.forEach((a) => data.history.push({ ...a, round_id: round.round_id, practice_mode: round.practice_mode }));
-  return { round_id: round.round_id, score: attempts.filter((a) => a.is_correct).length, total: attempts.length };
+  if (mockShouldFail()) throw new Error('mock_save_failed');
+
+  const result = {
+    round_id: round.round_id,
+    score: attempts.filter((a) => a.is_correct).length,
+    total: attempts.length,
+  };
+  if (data.history.some((h) => h.round_id === round.round_id)) return { ...result, already_saved: true };
+
+  attempts.forEach((a) => {
+    data.history.push({
+      round_id: round.round_id,
+      word_id: a.word_id,
+      practice_mode: round.practice_mode,
+      is_correct: a.is_correct,
+      practiced_at: a.practiced_at,
+    });
+    updateProgress(data, a);
+  });
+  return { ...result, already_saved: false };
+}
+
+/** 與後端相同的錯題優先規則，讓假資料模式下的畫面也會更新。 */
+function updateProgress(data, attempt) {
+  let p = data.progress.find((x) => x.word_id === attempt.word_id);
+  if (!p) {
+    p = { word_id: attempt.word_id, correct_count: 0, incorrect_count: 0, consecutive_correct: 0, needs_review: false, last_reviewed_at: '' };
+    data.progress.push(p);
+  }
+  if (attempt.is_correct) {
+    p.correct_count++;
+    p.consecutive_correct++;
+    if (p.consecutive_correct >= 3) p.needs_review = false;
+  } else {
+    p.incorrect_count++;
+    p.consecutive_correct = 0;
+    p.needs_review = true;
+  }
+  p.last_reviewed_at = attempt.practiced_at;
+}
+
+/** 開發用：在瀏覽器 console 執行 localStorage.setItem('mv.mockFail', '1') 可模擬存檔失敗。 */
+function mockShouldFail() {
+  try {
+    return localStorage.getItem('mv.mockFail') === '1';
+  } catch (err) {
+    return false;
+  }
 }

@@ -36,6 +36,50 @@ export function normText(value) {
   return String(value ?? '').normalize('NFC').trim();
 }
 
+/** 洗牌，回傳新陣列。 */
+export function shuffle(items) {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+const POS_LABELS = {
+  'n.m.': '名詞（陽性）',
+  'n.f.': '名詞（陰性）',
+  'n.m.pl.': '名詞（陽性複數）',
+  'n.f.pl.': '名詞（陰性複數）',
+  'n.': '名詞',
+  'v.': '動詞',
+  'adj.': '形容詞',
+  'adv.': '副詞',
+  'conj.': '連接詞',
+  'prep.': '介系詞',
+  'pron.': '代名詞',
+};
+
+/** 詞性顯示文字：常見縮寫轉成中文，其他照原樣。 */
+export function posLabel(pos) {
+  return POS_LABELS[String(pos || '').trim().toLowerCase()] || pos || '';
+}
+
+let toastTimer = null;
+
+/** 畫面下方的短暫提示。 */
+export function toast(message) {
+  let el = document.getElementById('toast');
+  if (!el) {
+    el = h('div', { id: 'toast', class: 'toast', role: 'status', 'aria-live': 'polite' });
+    document.body.append(el);
+  }
+  el.textContent = message;
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, 3500);
+}
+
 const ICONS = {
   check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
   x: '<path d="M6 6l12 12M18 6L6 18"/>',
