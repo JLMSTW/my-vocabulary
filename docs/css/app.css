@@ -1089,6 +1089,58 @@ body.no-tabbar .view { padding-bottom: calc(var(--safe-bottom) + 110px); }
 .stat-card-review .stat-label,
 .stat-card-review .stat-sub { color: var(--wrong); }
 
+.stat-card-link { text-decoration: none; cursor: pointer; touch-action: manipulation; }
+
+/* 單字紀錄 */
+.word-list > * + * { margin-top: 10px; }
+
+.word-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 14px 14px 18px;
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.word-row-main > * + * { margin-top: 2px; }
+
+.word-row-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.word-row-word { font-size: 1.2rem; font-weight: 800; }
+
+.tag-review {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--wrong-bg);
+  color: var(--wrong);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.tag-review .icon,
+.word-row-stats .icon { width: 1em; height: 1em; }
+
+.word-row-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 0.85rem;
+}
+
+.word-row-stats span { display: inline-flex; align-items: center; gap: 3px; }
+.stat-ok { color: var(--correct); }
+.stat-ng { color: var(--wrong); }
+
 /* 月曆 */
 .calendar-card {
   padding: 14px 14px 16px;

@@ -103,7 +103,9 @@ export async function renderFilter(container, params) {
       count >= MIN_WORDS
         ? h('div', { class: 'notice notice-info' }, icon('info'), h('span', {}, '同時符合以上條件：', h('strong', {}, `${count} 個字`)))
         : h('div', { class: 'notice notice-wrong' }, icon('info'),
-            h('span', {}, `只有 ${count} 個字符合，至少要 ${MIN_WORDS} 個字才能開始。請擴大範圍。`)),
+            h('span', {}, draft.reviewOnly && reviewCount === 0
+              ? '「只練待複習」已開啟，但目前沒有待複習的字（練習答錯的字才會變成待複習）。請關掉這個開關。'
+              : `只有 ${count} 個字符合，至少要 ${MIN_WORDS} 個字才能開始。請擴大範圍。`)),
 
       h('div', { class: 'action-bar' },
         h('button', { type: 'button', class: 'btn', onclick: () => { draft = defaultFilter(draft.language); draw(); } }, '清除'),

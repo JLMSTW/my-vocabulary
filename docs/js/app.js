@@ -12,6 +12,7 @@ import { renderFlashcard } from './views/flashcard.js';
 import { quizRoute } from './views/quiz.js';
 import { renderAdd } from './views/add.js';
 import { renderSettings } from './views/settings.js';
+import { renderWords } from './views/words.js';
 
 // tab：這個畫面屬於哪個底部分頁；null 表示不顯示底部分頁
 const ROUTES = {
@@ -22,6 +23,7 @@ const ROUTES = {
   add: { title: '新增', tab: 'add', render: renderAdd },
   filter: { title: '選擇範圍', tab: null, render: renderFilter },
   settings: { title: '連線設定', tab: null, render: renderSettings },
+  words: { title: '單字紀錄', tab: 'record', render: renderWords },
 };
 const DEFAULT_ROUTE = 'record';
 

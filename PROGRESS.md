@@ -56,7 +56,11 @@ Web App 網址與 token 只存在自己的密碼管理工具，不放進 repo。
 - [x] 新增單字：新主題改為有「加入」按鈕
 - [x] 修正：主題下拉選單沒有列出既有主題、新主題沒存進 Sheet（原生 replaceChildren 不展開陣列）；改用 `setChildren` / `appendChildren`，也修正畫面出現 "null" 字樣
 - [x] 詞性加「片語」（存 `phr.`）
-- [ ] 實測：手機新增單字寫入 Sheet、練習一回合後 PracticeHistory / Rounds / ReviewProgress 正確
+- [x] 實測：手機新增單字寫入 Sheet、練習一回合後有寫入紀錄
+- [x] 篩選頁：「只練待複習」開著但沒有待複習的字時，提示改為說明原因
+- [x] 新增「單字紀錄」頁（`#/words`）：點紀錄頁的「待複習」或「生字庫」進入，看每個字答對/答錯次數（已更新 CLAUDE.md）
+
+**第 3 步完成。**
 
 ### 本機預覽
 
@@ -70,8 +74,7 @@ python3 -m http.server 8000 --directory docs
 
 ### 下一步
 
-1. 完成第 3 步實測（新增單字、練習一回合，到 Sheet 檢查）
-2. 第 4 步：開啟 GitHub Pages、App 圖示、iPhone 加入主畫面、驗收清單
+1. 第 4 步：開啟 GitHub Pages、App 圖示、iPhone 加入主畫面、驗收清單
 
 ### 後端改版時
 

@@ -43,16 +43,20 @@ export async function renderRecord(container) {
     ),
     calendarCard(stats, year, month),
     h('div', { class: 'grid-2' },
-      h('div', { class: 'stat-card' },
+      h('a', {
+        class: 'stat-card stat-card-link',
+        href: `#/words?view=all&lang=${stats.library.FR >= stats.library.IT ? 'FR' : 'IT'}`,
+        'aria-label': `生字庫 ${stats.library.total} 個字，點一下看每個字的紀錄`,
+      },
         h('div', { class: 'stat-label' }, '生字庫'),
         h('div', { class: 'stat-value' }, stats.library.total),
         h('div', { class: 'stat-sub' }, `法文 ${stats.library.FR} · 義大利文 ${stats.library.IT}`)
       ),
-      h('button', {
-        class: 'stat-card stat-card-review',
-        type: 'button',
-        'aria-label': `待複習 ${stats.review.total} 個字，點一下開始練習待複習的字`,
-        onclick: () => { location.hash = '#/filter?review=1&from=flashcard&back=record'; },
+      h('a', {
+        class: 'stat-card stat-card-review stat-card-link',
+        // 先顯示待複習比較多的語言
+        href: `#/words?view=review&lang=${stats.review.FR >= stats.review.IT ? 'FR' : 'IT'}`,
+        'aria-label': `待複習 ${stats.review.total} 個字，點一下看是哪些字`,
       },
         h('div', { class: 'stat-label' }, '待複習'),
         h('div', { class: 'stat-value' }, stats.review.total),
