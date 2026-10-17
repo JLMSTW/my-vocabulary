@@ -4,3 +4,6 @@
 .clasp.json
 .clasprc.json
 node_modules/
+
+# 個人筆記，只存在這台電腦
+NOTES.md
