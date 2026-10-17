@@ -62,6 +62,14 @@ Web App 網址與 token 只存在自己的密碼管理工具，不放進 repo。
 
 **第 3 步完成。**
 
+## 2026-10-17：第 4 步上線
+
+- [x] App 圖示（`docs/icons/`，深藍底＋藍、金兩張卡）、apple-touch-icon、manifest icons、`.nojekyll`
+- [x] 決定：repo 改公開以使用免費 GitHub Pages（已確認 git 歷史沒有網址與 token）
+- [ ] GitHub 設定：repo 改公開、Pages 選 main / docs
+- [ ] iPhone：開 Pages 網址、重新輸入網址與 token、加入主畫面
+- [ ] 驗收清單逐項確認
+
 ### 本機預覽
 
 需要預覽伺服器（Mac 內建 Python，只讀取 `docs/`）。啟動前先問過使用者。
