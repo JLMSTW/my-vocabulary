@@ -51,7 +51,35 @@ button, input, select, textarea { font: inherit; color: inherit; }
   outline: none;
 }
 
-.view > * + * { margin-top: 14px; }
+.page > * + * { margin-top: 14px; }
+
+.head-actions {
+  display: flex;
+  align-items: center;
+  margin-right: -10px;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 80px 0;
+  color: var(--muted);
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--line);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.link-btn-inline { margin: 0; padding: 0; min-height: 36px; font-size: 0.85rem; }
 
 /* 每頁的標題列 */
 .page-head {
@@ -261,7 +289,7 @@ body.no-tabbar .view { padding-bottom: calc(var(--safe-bottom) + 110px); }
   font-weight: 600;
 }
 
-.pending-banner span { flex: 1; }
+.pending-banner > span:not(.icon) { flex: 1; }
 .pending-banner .btn { border-color: var(--wrong); color: var(--wrong); }
 
 .toast {

@@ -1,9 +1,9 @@
 /**
  * 學習紀錄（Dashboard）：每日目標、連續練習、本月達標、月曆、生字庫、待複習。
  */
-import { loadData } from '../data.js';
+import { errorMessage, loadData } from '../data.js';
 import { computeDashboard, calendarCells, weekday, DAILY_GOAL } from '../stats.js';
-import { h, icon } from '../util.js';
+import { h, icon, toast } from '../util.js';
 
 const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
 const STATE_LABEL = { fr: '練了法文', it: '練了義大利文', both: '法文、義大利文都有練', none: '沒練習', future: '' };
@@ -15,8 +15,26 @@ export async function renderRecord(container) {
 
   container.append(
     h('header', { class: 'page-head' },
-      h('h1', {}, '學習紀錄'),
-      h('span', { class: 'page-head-meta' }, `${month} 月 ${date} 日 週${WEEKDAYS[weekday(stats.today)]}`)
+      h('div', {},
+        h('h1', {}, '學習紀錄'),
+        h('span', { class: 'page-head-meta' }, `${month} 月 ${date} 日 週${WEEKDAYS[weekday(stats.today)]}`)
+      ),
+      h('div', { class: 'head-actions' },
+        h('button', {
+          type: 'button', class: 'icon-btn', 'aria-label': '從 Google Sheet 重新讀取',
+          onclick: async (e) => {
+            e.currentTarget.disabled = true;
+            try {
+              await loadData({ force: true });
+              toast('已重新讀取');
+            } catch (err) {
+              toast(errorMessage(err));
+            }
+            window.dispatchEvent(new HashChangeEvent('hashchange'));
+          },
+        }, icon('refresh')),
+        h('a', { class: 'icon-btn', href: '#/settings', 'aria-label': '連線設定' }, icon('gear'))
+      )
     ),
     goalCard(stats.daily),
     h('div', { class: 'grid-2' },

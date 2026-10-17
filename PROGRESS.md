@@ -47,6 +47,15 @@ Web App 網址與 token 只存在自己的密碼管理工具，不放進 repo。
 
 **第 2 步完成。**
 
+## 2026-10-17：第 3 步串接 Apps Script
+
+- [x] 連線設定頁：輸入 Web App 網址與 token，測試連線成功才儲存在手機（`docs/js/connection.js`）
+- [x] `data.js` 改接後端；假資料改為開發用（網址加 `?mock=1` 開啟、`?mock=0` 關閉）
+- [x] 讀取中、錯誤畫面（重試、連線設定）、學習紀錄頁的重新讀取與設定按鈕
+- [x] iPhone 實測連線成功（token 貼上時會自動去掉「token：」與空白）
+- [x] 新增單字：新主題改為有「加入」按鈕
+- [ ] 實測：手機新增單字寫入 Sheet、練習一回合後 PracticeHistory / Rounds / ReviewProgress 正確
+
 ### 本機預覽
 
 需要預覽伺服器（Mac 內建 Python，只讀取 `docs/`）。啟動前先問過使用者。
@@ -59,7 +68,8 @@ python3 -m http.server 8000 --directory docs
 
 ### 下一步
 
-1. 第 3 步：串接 Apps Script（設定畫面輸入網址與 token、`data.js` 改接後端、讀取中與錯誤提示）
+1. 完成第 3 步實測（新增單字、練習一回合，到 Sheet 檢查）
+2. 第 4 步：開啟 GitHub Pages、App 圖示、iPhone 加入主畫面、驗收清單
 
 ### 後端改版時
 

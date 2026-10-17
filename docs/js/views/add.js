@@ -3,7 +3,7 @@
  * 外文（含定冠詞）與中文必填；主題、標籤可選既有的或輸入新的；例句只存在 Sheet。
  * 送出成功後清空表單（保留語言），可以連續新增。
  */
-import { addWord, ApiError, loadData } from '../data.js';
+import { addWord, ApiError, errorMessage, loadData } from '../data.js';
 import { canonical } from '../grading.js';
 import { getAddLanguage, setAddLanguage } from '../prefs.js';
 import { h, icon, normText, toast } from '../util.js';
@@ -52,8 +52,10 @@ export async function renderAdd(container) {
     POS_OPTIONS.map(([value, label]) => h('option', { value }, label)));
   const topicSelect = h('select', { id: 'add-topic', class: 'select' });
   const topicInput = h('input', {
-    class: 'input', type: 'text', placeholder: '輸入新主題', hidden: true, 'aria-label': '新主題',
+    class: 'input tag-input', type: 'text', placeholder: '輸入新主題', 'aria-label': '新主題', enterkeyhint: 'done',
   });
+  const topicAdder = h('div', { class: 'tag-adder', hidden: true }, topicInput,
+    h('button', { type: 'button', class: 'btn btn-small', onclick: () => confirmTopic() }, '加入'));
   const tagBox = h('div', { class: 'chips', role: 'group', 'aria-label': '標籤' });
   const exampleInput = h('textarea', {
     id: 'add-example', class: 'input textarea', rows: 2,
@@ -63,19 +65,31 @@ export async function renderAdd(container) {
   const submit = h('button', { type: 'submit', class: 'btn btn-primary btn-block btn-large' }, '加入生字庫');
 
   // ---------- 主題 ----------
+  let newTopics = [];   // 這次輸入、生字庫裡還沒有的主題
   const drawTopics = (keep = topicSelect.value) => {
-    const topics = [...new Set(data.vocabulary.map((w) => w.topic).filter(Boolean))].sort(byLocale);
+    const existing = [...new Set(data.vocabulary.map((w) => w.topic).filter(Boolean))];
+    const topics = [...new Set([...existing, ...newTopics])].sort(byLocale);
     topicSelect.replaceChildren(
       h('option', { value: '' }, '（不填）'),
       topics.map((t) => h('option', { value: t }, t)),
       h('option', { value: NEW_TOPIC }, '＋ 新增主題…')
     );
     topicSelect.value = topics.includes(keep) || keep === NEW_TOPIC ? keep : '';
-    topicInput.hidden = topicSelect.value !== NEW_TOPIC;
+    topicAdder.hidden = topicSelect.value !== NEW_TOPIC;
   };
+  // 按「加入」或 Enter：新主題加進選單並選好
+  const confirmTopic = () => {
+    const topic = normText(topicInput.value);
+    topicInput.value = '';
+    if (topic && !newTopics.includes(topic)) newTopics.push(topic);
+    drawTopics(topic || '');
+  };
+  topicInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); confirmTopic(); }
+  });
   topicSelect.addEventListener('change', () => {
-    topicInput.hidden = topicSelect.value !== NEW_TOPIC;
-    if (!topicInput.hidden) topicInput.focus();
+    topicAdder.hidden = topicSelect.value !== NEW_TOPIC;
+    if (!topicAdder.hidden) topicInput.focus();
   });
 
   // ---------- 標籤 ----------
@@ -163,10 +177,10 @@ export async function renderAdd(container) {
     posSelect.value = '';
     topicSelect.value = '';
     topicInput.value = '';
-    topicInput.hidden = true;
     exampleInput.value = '';
     selectedTags = [];
     newTags = [];
+    newTopics = [];
     addingTag = false;
     drawTopics('');
     drawTags();
@@ -204,7 +218,7 @@ export async function renderAdd(container) {
       wordInput.focus();
     } catch (err) {
       const code = err instanceof ApiError ? err.code : '';
-      showError(ERRORS[code] || '沒有加入成功，請檢查網路後再按一次。');
+      showError(ERRORS[code] || `沒有加入成功：${errorMessage(err)}`);
     } finally {
       submit.disabled = false;
       submit.textContent = '加入生字庫';
@@ -234,7 +248,7 @@ export async function renderAdd(container) {
       h('div', { class: 'grid-2' },
         h('div', { class: 'field' }, h('label', { class: 'field-label', for: 'add-pos' }, '詞性'), posSelect),
         h('div', { class: 'field' }, h('label', { class: 'field-label', for: 'add-topic' }, '主題'), topicSelect)),
-      topicInput,
+      topicAdder,
       h('div', { class: 'field' },
         h('div', { class: 'field-label field-label-row' }, '標籤', h('small', {}, '可多選')),
         tagBox),
