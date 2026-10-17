@@ -25,6 +25,12 @@ export function practiceHead({ filter, count, from, onLanguage }) {
   );
 }
 
+/** 生字卡、選擇題的方向選項 */
+export const DIRECTIONS = [
+  { value: 'foreign', label: '外文 → 中文' },
+  { value: 'zh', label: '中文 → 外文' },
+];
+
 /** 語言切換。variant：'seg-dark'（深色選中）或空字串（白色選中）。 */
 export function languageToggle(current, onChange, variant = '') {
   return segmented(

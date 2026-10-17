@@ -3,9 +3,17 @@
  * 目前是假資料模式；第 3 步串接 Apps Script 時只改這個檔案。
  */
 import { createMockData } from './mock.js';
-import { nowIso, uuid } from './util.js';
+import { normText, nowIso, uuid } from './util.js';
 
 export const USE_MOCK = true;
+
+/** 後端回傳的錯誤，code 與 Apps Script 相同（例如 duplicate、missing_word）。 */
+export class ApiError extends Error {
+  constructor(code) {
+    super(code);
+    this.code = code;
+  }
+}
 
 let cache = null;
 
@@ -16,12 +24,30 @@ export async function loadData({ force = false } = {}) {
   return cache;
 }
 
-/** 新增單字，回傳新增的單字。 */
+/**
+ * 新增單字，回傳新增的單字。
+ * input：{ language, word, meaning_zh, part_of_speech, topic, tags: [], example }
+ * 假資料模式下模擬後端的檢查與正規化。
+ */
 export async function addWord(input) {
   const data = await loadData();
-  const word = { ...input, word_id: `mock-${uuid()}`, date_added: nowIso() };
-  data.vocabulary.push(word);
-  return word;
+  const word = {
+    language: normText(input.language).toUpperCase(),
+    word: normText(input.word),
+    meaning_zh: normText(input.meaning_zh),
+    part_of_speech: normText(input.part_of_speech),
+    topic: normText(input.topic),
+    tags: [...new Set((input.tags || []).map(normText).filter(Boolean))],
+  };
+  if (!['FR', 'IT'].includes(word.language)) throw new ApiError('invalid_language');
+  if (!word.word) throw new ApiError('missing_word');
+  if (!word.meaning_zh) throw new ApiError('missing_meaning');
+  const key = (w) => [w.language, w.word.toLowerCase(), w.meaning_zh].join('\u0000');
+  if (data.vocabulary.some((w) => key(w) === key(word))) throw new ApiError('duplicate');
+
+  const saved = { ...word, word_id: `mock-${uuid()}`, date_added: nowIso() };
+  data.vocabulary.push(saved);
+  return saved;
 }
 
 /**

@@ -30,6 +30,24 @@ export function setSpeechRate(rate) {
   write('mv.speechRate', rate);
 }
 
+/** 新增單字時上次選的語言 */
+export function getAddLanguage() {
+  return read('mv.addLanguage', 'FR') === 'IT' ? 'IT' : 'FR';
+}
+
+export function setAddLanguage(language) {
+  write('mv.addLanguage', language);
+}
+
+/** 選擇題方向：'foreign'（看外文選中文）或 'zh'（看中文選外文） */
+export function getChoiceDirection() {
+  return read('mv.choiceDirection', 'foreign') === 'zh' ? 'zh' : 'foreign';
+}
+
+export function setChoiceDirection(direction) {
+  write('mv.choiceDirection', direction);
+}
+
 /** 生字卡方向：'foreign'（外文 → 中文）或 'zh'（中文 → 外文） */
 export function getCardDirection() {
   return read('mv.cardDirection', 'foreign') === 'zh' ? 'zh' : 'foreign';

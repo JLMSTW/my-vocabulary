@@ -10,12 +10,7 @@ import { applyFilter, loadFilter, saveFilter, switchLanguage, MIN_WORDS } from '
 import { getCardDirection, setCardDirection } from '../prefs.js';
 import { submitRound } from '../sync.js';
 import { h, icon, nowIso, posLabel, shuffle, toast, uuid } from '../util.js';
-import { notEnoughCard, practiceHead, segmented, speakRow } from './common.js';
-
-const DIRECTIONS = [
-  { value: 'foreign', label: '外文 → 中文' },
-  { value: 'zh', label: '中文 → 外文' },
-];
+import { DIRECTIONS, notEnoughCard, practiceHead, segmented, speakRow } from './common.js';
 
 export async function renderFlashcard(container) {
   const data = await loadData();

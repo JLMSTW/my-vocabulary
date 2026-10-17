@@ -3,20 +3,22 @@
  * 網址格式：#/route?key=value
  * 畫面的 render 可以回傳清理函式，離開該畫面時會先執行（生字卡用來寫入紀錄）。
  */
-import { loadData, USE_MOCK } from './data.js';
+import { USE_MOCK } from './data.js';
 import { onPendingChange, retryPending } from './sync.js';
 import { h, toast } from './util.js';
 import { renderRecord } from './views/record.js';
 import { renderFilter } from './views/filter.js';
 import { renderFlashcard } from './views/flashcard.js';
+import { quizRoute } from './views/quiz.js';
+import { renderAdd } from './views/add.js';
 
 // tab：這個畫面屬於哪個底部分頁；null 表示不顯示底部分頁
 const ROUTES = {
   record: { title: '紀錄', tab: 'record', render: renderRecord },
   flashcard: { title: '生字卡', tab: 'flashcard', render: renderFlashcard },
-  spelling: { title: '拼字', tab: 'spelling', render: placeholder('拼字練習') },
-  choice: { title: '選擇題', tab: 'choice', render: placeholder('選擇題') },
-  add: { title: '新增', tab: 'add', render: placeholder('新增單字') },
+  spelling: { title: '拼字', tab: 'spelling', render: quizRoute('spelling') },
+  choice: { title: '選擇題', tab: 'choice', render: quizRoute('choice') },
+  add: { title: '新增', tab: 'add', render: renderAdd },
   filter: { title: '選擇範圍', tab: null, render: renderFilter },
 };
 const DEFAULT_ROUTE = 'record';
@@ -53,20 +55,6 @@ async function render() {
   window.scrollTo(0, 0);
   const result = await route.render(view, params);
   if (typeof result === 'function') cleanup = result;
-}
-
-/** 尚未實作的畫面 */
-function placeholder(label) {
-  return async (container) => {
-    const { vocabulary } = await loadData();
-    container.append(
-      h('header', { class: 'page-head' }, h('h1', {}, label)),
-      h('div', { class: 'card stack' },
-        h('p', {}, `「${label}」畫面會在之後的段落實作。`),
-        h('p', { class: 'muted' }, `已讀到 ${vocabulary.length} 個單字。`)
-      )
-    );
-  };
 }
 
 /** 有練習紀錄送出失敗時，畫面上方顯示提示與重送按鈕。 */
