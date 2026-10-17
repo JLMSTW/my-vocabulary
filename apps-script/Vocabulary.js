@@ -7,6 +7,7 @@
  * 缺 word_id 或 word 的列（例如 onEdit 尚未補上）會略過。
  */
 function getData_() {
+  fillMissingIdsIfIdle_();
   const vocabulary = readRows(SHEETS.vocabulary)
     .filter((r) => r.word_id && r.word)
     .map(toVocabItem_);
@@ -33,6 +34,57 @@ function getData_() {
     }));
 
   return { vocabulary, progress, history };
+}
+
+/**
+ * 補上 Vocabulary 缺少或重複的 word_id（保險機制：onEdit 沒觸發時，例如手機 App、貼上整列）。
+ * 有 word 但沒有 word_id 的列補新 ID；與上方列重複的 word_id 換新 ID 並重設 date_added。
+ * 只寫回有變動的列。呼叫端負責加鎖。回傳補上的數量。
+ */
+function fillMissingIds_() {
+  const def = SHEETS.vocabulary;
+  const sheet = getSheet(def);
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return 0;
+
+  const col = (h) => def.headers.indexOf(h);
+  const values = sheet.getRange(2, 1, lastRow - 1, def.headers.length).getDisplayValues();
+  const seen = new Set();
+  const now = nowIso();
+  const changed = [];
+
+  values.forEach((row, i) => {
+    if (!normText(row[col('word')])) return;
+    const id = normText(row[col('word_id')]);
+    if (id && !seen.has(id)) {
+      seen.add(id);
+      return;
+    }
+    const newWordId = newId();
+    seen.add(newWordId);
+    row[col('word_id')] = newWordId;
+    if (id || !normText(row[col('date_added')])) row[col('date_added')] = now;
+    row[col('updated_at')] = now;
+    changed.push(i);
+  });
+
+  changed.forEach((i) => {
+    const range = sheet.getRange(i + 2, 1, 1, def.headers.length);
+    range.setNumberFormat('@');
+    range.setValues([values[i]]);
+  });
+  return changed.length;
+}
+
+/** 讀取資料前順手補 ID；正在寫入時就跳過，下次讀取再補。 */
+function fillMissingIdsIfIdle_() {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(3000)) return;
+  try {
+    fillMissingIds_();
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 /**

@@ -10,7 +10,23 @@
  * 透過 API 或腳本寫入不會觸發。
  */
 
-const CONTENT_FIELDS = ['language', 'word', 'meaning_zh', 'part_of_speech', 'example', 'topic', 'tags'];
+/** 開啟試算表時加上「My Vocabulary」選單。 */
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('My Vocabulary')
+    .addItem('補上缺少的 ID', 'fillMissingIds')
+    .addToUi();
+}
+
+/** 從選單或編輯器執行：補上缺少或重複的 word_id。 */
+function fillMissingIds() {
+  const count = withLock(() => fillMissingIds_());
+  const message = count ? `已補上 ${count} 個字的 ID。` : '沒有缺少 ID 的字。';
+  SpreadsheetApp.getActiveSpreadsheet().toast(message, 'My Vocabulary', 5);
+  Logger.log(message);
+}
+
+const CONTENT_FIELDS =['language', 'word', 'meaning_zh', 'part_of_speech', 'example', 'topic', 'tags'];
 
 function onEdit(e) {
   if (!e || !e.range) return;

@@ -66,9 +66,12 @@ Web App 網址與 token 只存在自己的密碼管理工具，不放進 repo。
 
 - [x] App 圖示（`docs/icons/`，深藍底＋藍、金兩張卡）、apple-touch-icon、manifest icons、`.nojekyll`
 - [x] 決定：repo 改公開以使用免費 GitHub Pages（已確認 git 歷史沒有網址與 token）
-- [ ] GitHub 設定：repo 改公開、Pages 選 main / docs
-- [ ] iPhone：開 Pages 網址、重新輸入網址與 token、加入主畫面
-- [ ] 驗收清單逐項確認
+- [x] GitHub 設定：repo 改公開、Pages 選 main / docs，網站 https://jlmstw.github.io/my-vocabulary/
+- [x] iPhone：開 Pages 網址、重新輸入網址與 token、加入主畫面，全螢幕開啟先進入學習紀錄
+- [x] 後端保險機制：讀取資料時補上缺少／重複的 word_id；Sheet 加「My Vocabulary › 補上缺少的 ID」選單（已發布新版本 v2）
+- [x] 驗收清單 16 項全部通過（CLAUDE.md 已勾選）
+
+**第 4 步完成，第一版上線。**
 
 ### 本機預覽
 
@@ -82,7 +85,10 @@ python3 -m http.server 8000 --directory docs
 
 ### 下一步
 
-1. 第 4 步：開啟 GitHub Pages、App 圖示、iPhone 加入主畫面、驗收清單
+第一版已完成。之後有新需求時：
+
+- 前端（`docs/`）：改完 commit 並 push，GitHub Pages 約 1～2 分鐘後更新；iPhone 主畫面 App 重新開啟即可
+- 後端（`apps-script/`）：照下方「後端改版時」推送並發布新版本
 
 ### 後端改版時
 
