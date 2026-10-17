@@ -54,6 +54,8 @@ Web App 網址與 token 只存在自己的密碼管理工具，不放進 repo。
 - [x] 讀取中、錯誤畫面（重試、連線設定）、學習紀錄頁的重新讀取與設定按鈕
 - [x] iPhone 實測連線成功（token 貼上時會自動去掉「token：」與空白）
 - [x] 新增單字：新主題改為有「加入」按鈕
+- [x] 修正：主題下拉選單沒有列出既有主題、新主題沒存進 Sheet（原生 replaceChildren 不展開陣列）；改用 `setChildren` / `appendChildren`，也修正畫面出現 "null" 字樣
+- [x] 詞性加「片語」（存 `phr.`）
 - [ ] 實測：手機新增單字寫入 Sheet、練習一回合後 PracticeHistory / Rounds / ReviewProgress 正確
 
 ### 本機預覽

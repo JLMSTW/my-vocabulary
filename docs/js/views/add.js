@@ -6,7 +6,7 @@
 import { addWord, ApiError, errorMessage, loadData } from '../data.js';
 import { canonical } from '../grading.js';
 import { getAddLanguage, setAddLanguage } from '../prefs.js';
-import { h, icon, normText, toast } from '../util.js';
+import { appendChildren, h, icon, normText, setChildren, toast } from '../util.js';
 import { languageToggle } from './common.js';
 
 const POS_OPTIONS = [
@@ -21,6 +21,7 @@ const POS_OPTIONS = [
   ['prep.', '介系詞'],
   ['conj.', '連接詞'],
   ['pron.', '代名詞'],
+  ['phr.', '片語'],
 ];
 const NEW_TOPIC = '__new__';
 const ARTICLE = { FR: /^(l'|(le|la|les)\s)/i, IT: /^(l'|(il|lo|la|i|gli|le)\s)/i };
@@ -69,7 +70,7 @@ export async function renderAdd(container) {
   const drawTopics = (keep = topicSelect.value) => {
     const existing = [...new Set(data.vocabulary.map((w) => w.topic).filter(Boolean))];
     const topics = [...new Set([...existing, ...newTopics])].sort(byLocale);
-    topicSelect.replaceChildren(
+    setChildren(topicSelect,
       h('option', { value: '' }, '（不填）'),
       topics.map((t) => h('option', { value: t }, t)),
       h('option', { value: NEW_TOPIC }, '＋ 新增主題…')
@@ -77,16 +78,18 @@ export async function renderAdd(container) {
     topicSelect.value = topics.includes(keep) || keep === NEW_TOPIC ? keep : '';
     topicAdder.hidden = topicSelect.value !== NEW_TOPIC;
   };
-  // 按「加入」或 Enter：新主題加進選單並選好
+  // 按「加入」、Enter，或離開輸入框（例如按 iPhone 鍵盤上方的「完成」）：新主題加進選單並選好
   const confirmTopic = () => {
     const topic = normText(topicInput.value);
+    if (!topic) return;
     topicInput.value = '';
-    if (topic && !newTopics.includes(topic)) newTopics.push(topic);
-    drawTopics(topic || '');
+    if (!newTopics.includes(topic)) newTopics.push(topic);
+    drawTopics(topic);
   };
   topicInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); confirmTopic(); }
+    if (e.key === 'Enter') { e.preventDefault(); topicInput.blur(); confirmTopic(); }
   });
+  topicInput.addEventListener('change', confirmTopic);
   topicSelect.addEventListener('change', () => {
     topicAdder.hidden = topicSelect.value !== NEW_TOPIC;
     if (!topicAdder.hidden) topicInput.focus();
@@ -113,7 +116,10 @@ export async function renderAdd(container) {
         class: 'input tag-input', type: 'text', placeholder: '新標籤', 'aria-label': '新標籤',
         enterkeyhint: 'done',
       });
+      let done = false;
       const confirmTag = () => {
+        if (done) return;
+        done = true;
         const tag = normText(tagInput.value).replace(/[,，]/g, '');
         addingTag = false;
         if (tag) {
@@ -124,8 +130,10 @@ export async function renderAdd(container) {
       };
       tagInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') { e.preventDefault(); confirmTag(); }
-        if (e.key === 'Escape') { addingTag = false; drawTags(); }
+        if (e.key === 'Escape') { done = true; addingTag = false; drawTags(); }
       });
+      // 離開輸入框（例如按 iPhone 鍵盤上方的「完成」）時也加入
+      tagInput.addEventListener('change', confirmTag);
       tagBox.replaceChildren(...chips,
         h('div', { class: 'tag-adder' }, tagInput,
           h('button', { type: 'button', class: 'btn btn-small', onclick: confirmTag }, '加入')));
@@ -235,7 +243,7 @@ export async function renderAdd(container) {
   drawTopics('');
   drawTags();
 
-  container.append(
+  appendChildren(container,
     h('header', { class: 'page-head' }, h('h1', {}, '新增單字')),
     h('form', { class: 'add-form', novalidate: true, onsubmit: onSubmit },
       languageBox,

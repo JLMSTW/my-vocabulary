@@ -7,7 +7,7 @@ import {
   applyFilter, defaultFilter, filterOptions, loadFilter, saveFilter, switchLanguage,
   monthLabel, DATE_OPTIONS, MIN_WORDS,
 } from '../filters.js';
-import { h, icon } from '../util.js';
+import { appendChildren, h, icon, setChildren } from '../util.js';
 import { languageToggle } from './common.js';
 
 const PRACTICE_ROUTES = ['flashcard', 'spelling', 'choice'];
@@ -27,7 +27,7 @@ export async function renderFilter(container, params) {
     const update = (patch) => { draft = { ...draft, ...patch }; draw(); };
     const updateDate = (patch) => update({ date: { ...draft.date, ...patch } });
 
-    container.replaceChildren(
+    setChildren(container, 
       h('header', { class: 'page-head page-head-back' },
         h('a', { class: 'icon-btn', href: `#/${back}`, 'aria-label': '返回' }, icon('chevron-left')),
         h('h1', {}, '選擇範圍')

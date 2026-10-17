@@ -3,7 +3,7 @@
  */
 import { errorMessage, loadData } from '../data.js';
 import { computeDashboard, calendarCells, weekday, DAILY_GOAL } from '../stats.js';
-import { h, icon, toast } from '../util.js';
+import { appendChildren, h, icon, setChildren, toast } from '../util.js';
 
 const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
 const STATE_LABEL = { fr: '練了法文', it: '練了義大利文', both: '法文、義大利文都有練', none: '沒練習', future: '' };
@@ -13,7 +13,7 @@ export async function renderRecord(container) {
   const stats = computeDashboard(data);
   const [year, month, date] = stats.today.split('-').map(Number);
 
-  container.append(
+  appendChildren(container, 
     h('header', { class: 'page-head' },
       h('div', {},
         h('h1', {}, '學習紀錄'),

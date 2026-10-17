@@ -3,7 +3,7 @@
  */
 import { clearConnection, getConnection, setConnection, URL_PATTERN } from '../connection.js';
 import { callApi, clearCache, errorMessage, USE_MOCK } from '../data.js';
-import { h, icon, toast } from '../util.js';
+import { appendChildren, h, icon, setChildren, toast } from '../util.js';
 
 export async function renderSettings(container) {
   const saved = getConnection();
@@ -92,11 +92,11 @@ export async function renderSettings(container) {
       }, '清除'))
   );
   const renderSettingsAgain = () => {
-    container.replaceChildren();
+    setChildren(container);
     renderSettings(container);
   };
 
-  container.append(
+  appendChildren(container, 
     h('header', { class: 'page-head page-head-back' },
       saved ? h('a', { class: 'icon-btn', href: '#/record', 'aria-label': '返回' }, icon('chevron-left')) : null,
       h('h1', {}, '連線設定')

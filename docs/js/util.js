@@ -58,6 +58,7 @@ const POS_LABELS = {
   'conj.': '連接詞',
   'prep.': '介系詞',
   'pron.': '代名詞',
+  'phr.': '片語',
 };
 
 /** 詞性顯示文字：常見縮寫轉成中文，其他照原樣。 */
@@ -101,6 +102,25 @@ export function icon(name) {
   span.setAttribute('aria-hidden', 'true');
   span.innerHTML = `<svg viewBox="0 0 24 24">${ICONS[name] || ''}</svg>`;
   return span;
+}
+
+/**
+ * 換掉元素的內容。與原生 replaceChildren 不同：陣列會展開，null / false 會略過。
+ * （原生 replaceChildren 會把陣列變成文字、把 null 顯示成 "null"）
+ */
+export function setChildren(el, ...children) {
+  el.replaceChildren(...flatNodes(children));
+}
+
+/** 加到元素最後面，規則同 setChildren。 */
+export function appendChildren(el, ...children) {
+  el.append(...flatNodes(children));
+}
+
+function flatNodes(children) {
+  return children.flat(Infinity)
+    .filter((c) => c !== null && c !== undefined && c !== false)
+    .map((c) => (c instanceof Node ? c : document.createTextNode(String(c))));
 }
 
 /** 建立 DOM 元素的簡寫：h('div', { class: 'card' }, '文字', childEl) */

@@ -9,7 +9,7 @@ import { loadData } from '../data.js';
 import { applyFilter, loadFilter, saveFilter, switchLanguage, MIN_WORDS } from '../filters.js';
 import { getCardDirection, setCardDirection } from '../prefs.js';
 import { submitRound } from '../sync.js';
-import { h, icon, nowIso, posLabel, shuffle, toast, uuid } from '../util.js';
+import { appendChildren, h, icon, nowIso, posLabel, setChildren, shuffle, toast, uuid } from '../util.js';
 import { DIRECTIONS, notEnoughCard, practiceHead, segmented, speakRow } from './common.js';
 
 export async function renderFlashcard(container) {
@@ -78,16 +78,16 @@ export async function renderFlashcard(container) {
 
   const draw = () => {
     const matched = applyFilter(data, filter);
-    container.replaceChildren(
+    setChildren(container, 
       practiceHead({ filter, count: matched.length, from: 'flashcard', onLanguage: changeLanguage }),
       segmented(DIRECTIONS, direction, changeDirection, { label: '生字卡方向', variant: 'seg-compact' })
     );
     if (matched.length < MIN_WORDS) {
-      container.append(notEnoughCard(matched.length, 'flashcard'));
+      appendChildren(container, notEnoughCard(matched.length, 'flashcard'));
     } else if (index >= deck.length) {
-      container.append(doneCard());
+      appendChildren(container, doneCard());
     } else {
-      container.append(...cardView(deck[index]));
+      appendChildren(container, ...cardView(deck[index]));
     }
   };
 

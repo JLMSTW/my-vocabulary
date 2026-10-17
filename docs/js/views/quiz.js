@@ -10,7 +10,7 @@ import { choiceOptions, distinctMeanings, reviewSet, weightedSample, ROUND_SIZE 
 import { getChoiceDirection, setChoiceDirection } from '../prefs.js';
 import { speak } from '../speech.js';
 import { retryPending, submitRound } from '../sync.js';
-import { h, icon, nowIso, posLabel, uuid } from '../util.js';
+import { appendChildren, h, icon, nowIso, posLabel, setChildren, uuid } from '../util.js';
 import { DIRECTIONS, notEnoughCard, practiceHead, segmented, speakRow } from './common.js';
 
 const MODES = {
@@ -44,7 +44,7 @@ async function renderQuiz(container, mode) {
     round = null;
     const matched = applyFilter(data, filter);
     const meanings = distinctMeanings(data, filter.language);
-    container.replaceChildren(
+    setChildren(container, 
       practiceHead({
         filter,
         count: matched.length,
@@ -65,12 +65,12 @@ async function renderQuiz(container, mode) {
     );
 
     if (matched.length < MIN_WORDS) {
-      container.append(notEnoughCard(matched.length, mode));
+      appendChildren(container, notEnoughCard(matched.length, mode));
     } else if (mode === 'choice' && meanings < 4) {
-      container.append(notEnoughCard(matched.length, mode,
+      appendChildren(container, notEnoughCard(matched.length, mode,
         `${LANGUAGE_NAMES[filter.language]}至少要有 4 個不同的中文意思才能出選擇題，目前只有 ${meanings} 個。`));
     } else {
-      container.append(
+      appendChildren(container, 
         h('div', { class: 'card start-card' },
           h('h2', {}, `${M.title}練習`),
           h('p', { class: 'muted' }, M.intro(direction)),
@@ -148,7 +148,7 @@ async function renderQuiz(container, mode) {
 
   const drawQuestion = () => {
     const q = round.questions[round.index];
-    container.replaceChildren(...quizHead());
+    setChildren(container, ...quizHead());
     window.scrollTo(0, 0);
     if (mode === 'spelling') spellingQuestion(q);
     else choiceQuestion(q);
@@ -186,7 +186,7 @@ async function renderQuiz(container, mode) {
       const result = gradeSpelling(typed, word.word, word.language);
       record(q, typed, word.word, result.correct);
       input.blur();
-      container.replaceChildren(
+      setChildren(container, 
         ...quizHead(),
         promptCard,
         h('div', { class: 'field-label' }, '你的答案'),
@@ -209,7 +209,7 @@ async function renderQuiz(container, mode) {
       word.part_of_speech ? h('span', { class: 'pos-chip pos-chip-light' }, posLabel(word.part_of_speech)) : null
     );
 
-    container.append(promptCard, answerArea);
+    appendChildren(container, promptCard, answerArea);
     input.focus();
   };
 
@@ -247,8 +247,8 @@ async function renderQuiz(container, mode) {
         progressBar(round.questions.length, round.attempts.map((a) => a.is_correct), round.index)
       );
       // 看中文選外文時，作答後才提供正確答案的發音
-      if (zhFirst) container.append(correctBox(word, '正確答案', []));
-      container.append(nextButton());
+      if (zhFirst) appendChildren(container, correctBox(word, '正確答案', []));
+      appendChildren(container, nextButton());
     };
 
     const prompt = zhFirst
@@ -261,7 +261,7 @@ async function renderQuiz(container, mode) {
           h('div', { class: 'prompt-word', lang }, word.word),
           speakRow(() => word.word, word.language).el);
 
-    container.append(prompt, h('div', { class: 'options', role: 'group', 'aria-label': '選項' }, buttons));
+    appendChildren(container, prompt, h('div', { class: 'options', role: 'group', 'aria-label': '選項' }, buttons));
   };
 
   // ---------- 回合結束 ----------
@@ -275,7 +275,7 @@ async function renderQuiz(container, mode) {
     const summary = filterSummary(meta.filters);
     const status = h('p', { class: 'save-status' }, '存檔中…');
 
-    container.replaceChildren(
+    setChildren(container, 
       h('section', { class: 'result-card' },
         h('div', { class: 'result-sub' },
           [M.title, LANGUAGE_NAMES[meta.language], summary === '全部單字' ? '' : summary].filter(Boolean).join(' · ')),
